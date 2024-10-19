@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sqlite3.h>
 
 typedef struct {
     char name[50];
@@ -79,6 +80,7 @@ void ShowDetails()
         }
     }
 }
+
 void ReadCSVAndUpdateSeats(const char *filename, Theatre *theatre, char *moviename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -110,6 +112,31 @@ void ReadCSVAndUpdateSeats(const char *filename, Theatre *theatre, char *moviena
     }
     fclose(file);
 }
+
+void insertdb(){
+    char name[100];
+    char email[100];
+    char phone[11];
+    char movie[100];
+    char row[2];
+    char column[2];
+
+    scanf("%s",name);
+    scanf("%s",email);
+    scanf("%s",phone);
+    scanf("%s",movie);
+    scanf("%s",row);
+    scanf("%s",column);
+
+    char *insert="INSERT INTO movies VALUES";
+    strcat(insert,name);
+    strcat(insert,email);
+    strcat(insert,phone);
+    strcat(insert,movie);
+    strcat(insert,row);
+    strcat(insert,column);
+}
+
 void Book()
 {
     printf("   >>> Enter your first or last name: ");
@@ -575,6 +602,12 @@ void GenerateBill()
 
 int main()
 {
+    sqlite3* db;
+    sqlite3_open("movies.db",&db);
+    char* create="CREATE TABLE IF NOT EXISTS movies (""Name TEXT PRIMARY KEY NOT NULL,""email TEXT NOT NULL,""phone TEXT NOT NULL,""movie TEXT NOT NULL,""row TEXT NOT NULL,""column INT NOT NULL);";
+    sqlite3_exec(db,create, 0, 0,0);
+
+
     one.movie_name = malloc(strlen("Dune 2") + 1);
     strcpy(one.movie_name, "Dune 2");
     two.movie_name = malloc(strlen("Transformers One") + 1);
@@ -622,7 +655,7 @@ int main()
                ShowDetails();
                break;
            case 3:
-               Book();
+               insertdb();
                break;
            case 4:
                GenerateBill();
